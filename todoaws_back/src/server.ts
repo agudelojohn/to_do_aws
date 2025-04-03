@@ -15,6 +15,14 @@ interface User {
   address: string;
 }
 
+interface ToDoTask {
+  id: string;
+  creationDate: string;
+  description: string;
+  priority: number;
+  userOwner: string;
+}
+
 // Función para obtener todos los usuarios de DynamoDB
 const getUsers = async (): Promise<User[]> => {
   try {
@@ -30,4 +38,17 @@ const getUsers = async (): Promise<User[]> => {
   }
 };
 
-export default getUsers;
+const getToDoTasks = async (): Promise<ToDoTask[]> => {
+  try {
+    const params = {
+      TableName: "to_do_tasks",
+    };
+    const data = await dynamoDB.scan(params).promise();
+    return data.Items as ToDoTask[];
+  } catch (error) {
+    console.error("Error getting tasks:", error);
+    throw error;
+  }
+};
+
+export { getUsers, getToDoTasks };
